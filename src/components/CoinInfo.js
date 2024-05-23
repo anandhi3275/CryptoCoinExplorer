@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState ,useCallback} from 'react'
 import { CryptoState } from '../CryptoContext';
 import axios from 'axios';
 import { HistoricalChart } from '../config/api';
@@ -34,14 +34,16 @@ function CoinInfo({coin}) {
 
   const {currency}=CryptoState();
 
-  const fetchHistoricalData=async ()=>{
-    const {data}=await axios.get(HistoricalChart(coin.id,days,currency));
+  const fetchHistoricalData = useCallback(async () => {
+    const { data } = await axios.get(HistoricalChart(coin.id, days, currency));
     setHistoricalData(data.prices);
-  }
+  }, [coin.id, days, currency]);
+  
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchHistoricalData();
-  },[currency,days,coin]);
+  }, [fetchHistoricalData]);
+  
 
   useEffect(()=>{
     if(chartRef.current){

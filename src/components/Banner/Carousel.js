@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState ,useCallback} from 'react'
 import './Carousel.css'
 import axios from 'axios'
 import { TrendingCoins } from '../../config/api'
@@ -11,14 +11,16 @@ export function numberWithCommas(x){
 function Carousel() {
     const [trending,setTrending]=useState([]);
     const {currency,symbol}=CryptoState();
-    const fetchTrendingCoins=async()=>{
-        const {data}=await axios.get(TrendingCoins(currency));
+    const fetchTrendingCoins = useCallback(async () => {
+        const { data } = await axios.get(TrendingCoins(currency));
         setTrending(data);
-    };
+      }, [currency]);
+      
     console.log(trending);
-    useEffect(()=>{
+    useEffect(() => {
         fetchTrendingCoins();
-    },[currency]);
+      }, [fetchTrendingCoins]);
+      
     const items=trending.map((coin)=>{
         let profit=coin.price_change_percentage_24h>=0;
         return(

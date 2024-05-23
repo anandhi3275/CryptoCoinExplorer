@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState ,useCallback} from 'react'
 import { CryptoState } from '../CryptoContext'
 import axios from 'axios'
 import { CoinList } from '../config/api'
@@ -18,17 +18,18 @@ function CoinsTable() {
     const [page,setPage]=useState(1)
     const navigate=useNavigate();
 
-    const fetchCoins=async()=>{
+    const fetchCoins = useCallback(async () => {
         setLoading(true);
-        const {data}=await axios.get(CoinList(currency));
-
+        const { data } = await axios.get(CoinList(currency));
         setCoins(data);
         setLoading(false);
-    }
+      }, [currency]);
+      
     console.log(coins)
-    useEffect(()=>{
+    useEffect(() => {
         fetchCoins();
-    },[currency]);
+      }, [fetchCoins]);
+      
 
     const darkTheme=createTheme(
         {

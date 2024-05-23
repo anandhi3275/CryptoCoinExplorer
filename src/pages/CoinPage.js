@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { CryptoState } from '../CryptoContext';
 import axios from 'axios';
@@ -18,14 +18,16 @@ function CoinPage() {
   const [coin,setCoin]=useState();
 
   const {currency,symbol}=CryptoState();
-  const fetchCoin=async()=>{
-    const {data}=await axios.get(SingleCoin(id));
+  const fetchCoin = useCallback(async () => {
+    const { data } = await axios.get(SingleCoin(id));
     setCoin(data);
-  }
+  }, [id]);
+  
   console.log(coin);
-  useEffect(()=>{
+  useEffect(() => {
     fetchCoin();
-  },[]);
+  }, [fetchCoin]);
+  
   if(!coin){
     return <LinearProgress style={{backgroundColor:"gold"}}/>
   }
